@@ -6,6 +6,8 @@ import PersonalInfo from "@/components/cv/PersonalInfo";
 import Experience from "@/components/cv/Experience";
 import Education from "@/components/cv/Education";
 import Skills from "@/components/cv/Skills";
+import References from "@/components/cv/References";
+import AdditionalInfo from "@/components/cv/AdditionalInfo";
 import Preview from "@/components/cv/Preview";
 import { toast } from "sonner";
 
