@@ -9,8 +9,6 @@ import Skills from "@/components/cv/Skills";
 import Preview from "@/components/cv/Preview";
 import { toast } from "sonner";
 
-const sections = ["Personal Info", "Experience", "Education", "Skills", "Preview"];
-
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [formData, setFormData] = useState({
@@ -35,7 +33,29 @@ const Index = () => {
       graduationDate: string;
     }>,
     skills: [] as string[],
+    references: [] as Array<{
+      name: string;
+      position: string;
+      company: string;
+      email: string;
+      phone: string;
+    }>,
+    additionalInfo: {
+      languages: [] as Array<{ language: string; proficiency: string }>,
+      hobbies: [] as string[],
+      additionalNotes: "",
+    },
   });
+
+  const sections = [
+    "Personal Info",
+    "Experience",
+    "Education",
+    "Skills",
+    "References",
+    "Additional Info",
+    "Preview",
+  ];
 
   const progress = ((currentSection + 1) / sections.length) * 100;
 
@@ -73,7 +93,9 @@ const Index = () => {
           <div className="space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">{sections[currentSection]}</h2>
+                <h2 className="text-xl font-semibold">
+                  {sections[currentSection]}
+                </h2>
                 <span className="text-sm text-muted-foreground">
                   Step {currentSection + 1} of {sections.length}
                 </span>
@@ -106,7 +128,19 @@ const Index = () => {
                   onChange={(data) => updateFormData("skills", data)}
                 />
               )}
-              {currentSection === 4 && <Preview data={formData} />}
+              {currentSection === 4 && (
+                <References
+                  data={formData.references}
+                  onChange={(data) => updateFormData("references", data)}
+                />
+              )}
+              {currentSection === 5 && (
+                <AdditionalInfo
+                  data={formData.additionalInfo}
+                  onChange={(data) => updateFormData("additionalInfo", data)}
+                />
+              )}
+              {currentSection === 6 && <Preview data={formData} />}
             </div>
 
             <div className="flex justify-between pt-4">
@@ -117,7 +151,10 @@ const Index = () => {
               >
                 Back
               </Button>
-              <Button onClick={handleNext} disabled={currentSection === sections.length - 1}>
+              <Button
+                onClick={handleNext}
+                disabled={currentSection === sections.length - 1}
+              >
                 {currentSection === sections.length - 2 ? "Preview" : "Next"}
               </Button>
             </div>

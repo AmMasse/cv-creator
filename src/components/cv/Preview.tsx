@@ -27,6 +27,18 @@ interface PreviewProps {
       graduationDate: string;
     }>;
     skills: string[];
+    references: Array<{
+      name: string;
+      position: string;
+      company: string;
+      email: string;
+      phone: string;
+    }>;
+    additionalInfo: {
+      languages: Array<{ language: string; proficiency: string }>;
+      hobbies: string[];
+      additionalNotes: string;
+    };
   };
 }
 
@@ -128,6 +140,70 @@ const Preview = ({ data }: PreviewProps) => {
                   </span>
                 ))}
               </div>
+            </div>
+          )}
+
+          {data.references.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">References</h3>
+              <div className="space-y-6">
+                {data.references.map((ref, index) => (
+                  <div key={index} className="space-y-1">
+                    <h4 className="font-medium">{ref.name}</h4>
+                    <p>
+                      {ref.position} at {ref.company}
+                    </p>
+                    <div className="text-sm text-muted-foreground">
+                      <p>{ref.email}</p>
+                      <p>{ref.phone}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(data.additionalInfo.languages.length > 0 ||
+            data.additionalInfo.hobbies.length > 0 ||
+            data.additionalInfo.additionalNotes) && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">Additional Information</h3>
+              
+              {data.additionalInfo.languages.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-medium">Languages</h4>
+                  <div className="space-y-1">
+                    {data.additionalInfo.languages.map((lang, index) => (
+                      <p key={index}>
+                        {lang.language} - {lang.proficiency}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {data.additionalInfo.hobbies.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-medium">Hobbies & Interests</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {data.additionalInfo.hobbies.map((hobby, index) => (
+                      <span
+                        key={index}
+                        className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
+                      >
+                        {hobby}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {data.additionalInfo.additionalNotes && (
+                <div className="space-y-2">
+                  <h4 className="font-medium">Additional Notes</h4>
+                  <p className="text-sm">{data.additionalInfo.additionalNotes}</p>
+                </div>
+              )}
             </div>
           )}
         </div>
