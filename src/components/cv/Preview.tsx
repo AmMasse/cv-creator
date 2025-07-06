@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileText } from "lucide-react";
@@ -43,15 +44,32 @@ interface PreviewProps {
 }
 
 const Preview = ({ data }: PreviewProps) => {
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long' 
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
   const generatePDF = (detailed: boolean) => {
     const element = document.getElementById("cv-preview");
-    if (!element) return;
+    if (!element) {
+      toast.error("Preview not found. Please try again.");
+      return;
+    }
+
+    const filename = data.personalInfo.fullName 
+      ? `${data.personalInfo.fullName.replace(/\s+/g, "_")}_${detailed ? "CV" : "Resume"}.pdf`
+      : `${detailed ? "CV" : "Resume"}.pdf`;
 
     const opt = {
       margin: 1,
-      filename: `${data.personalInfo.fullName.replace(" ", "_")}_${
-        detailed ? "CV" : "Resume"
-      }.pdf`,
+      filename,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
@@ -74,67 +92,84 @@ const Preview = ({ data }: PreviewProps) => {
         </Button>
       </div>
 
-      <Card className="p-6" id="cv-preview">
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold">{data.personalInfo.fullName}</h2>
-            <div className="text-muted-foreground space-y-1">
-              <p>{data.personalInfo.email}</p>
-              <p>{data.personalInfo.phone}</p>
-              <p>{data.personalInfo.location}</p>
+      <Card className="p-8 print:p-6 print:shadow-none" id="cv-preview">
+        <div className="space-y-6">
+          {/* Header Section */}
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold text-gray-900">
+              {data.personalInfo.fullName || "Your Name"}
+            </h1>
+            <div className="text-gray-600 space-y-1">
+              {data.personalInfo.email && <p>{data.personalInfo.email}</p>}
+              {data.personalInfo.phone && <p>{data.personalInfo.phone}</p>}
+              {data.personalInfo.location && <p>{data.personalInfo.location}</p>}
             </div>
           </div>
 
+          {/* Experience Section */}
           {data.experience.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Experience</h3>
-              <div className="space-y-6">
+              <h2 className="text-xl font-semibold border-b-2 border-gray-200 pb-1">
+                Professional Experience
+              </h2>
+              <div className="space-y-4">
                 {data.experience.map((exp, index) => (
                   <div key={index} className="space-y-2">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-medium">{exp.position}</h4>
-                        <p className="text-muted-foreground">{exp.company}</p>
+                        <h3 className="font-semibold text-lg">{exp.position}</h3>
+                        <p className="text-gray-700 font-medium">{exp.company}</p>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(exp.startDate).toLocaleDateString()} -{" "}
-                        {new Date(exp.endDate).toLocaleDateString()}
+                      <p className="text-sm text-gray-600 text-right">
+                        {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                       </p>
                     </div>
-                    <p className="text-sm">{exp.description}</p>
+                    {exp.description && (
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        {exp.description}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
           )}
 
+          {/* Education Section */}
           {data.education.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Education</h3>
-              <div className="space-y-6">
+              <h2 className="text-xl font-semibold border-b-2 border-gray-200 pb-1">
+                Education
+              </h2>
+              <div className="space-y-3">
                 {data.education.map((edu, index) => (
                   <div key={index} className="space-y-1">
-                    <h4 className="font-medium">{edu.institution}</h4>
-                    <p>
-                      {edu.degree} in {edu.field}
+                    <h3 className="font-semibold">{edu.institution}</h3>
+                    <p className="text-gray-700">
+                      {edu.degree} {edu.field && `in ${edu.field}`}
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      Graduated: {new Date(edu.graduationDate).toLocaleDateString()}
-                    </p>
+                    {edu.graduationDate && (
+                      <p className="text-sm text-gray-600">
+                        Graduated: {formatDate(edu.graduationDate)}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
           )}
 
+          {/* Skills Section */}
           {data.skills.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Skills</h3>
+              <h2 className="text-xl font-semibold border-b-2 border-gray-200 pb-1">
+                Skills
+              </h2>
               <div className="flex flex-wrap gap-2">
                 {data.skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
+                    className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm"
                   >
                     {skill}
                   </span>
@@ -143,19 +178,22 @@ const Preview = ({ data }: PreviewProps) => {
             </div>
           )}
 
+          {/* References Section */}
           {data.references.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">References</h3>
-              <div className="space-y-6">
+              <h2 className="text-xl font-semibold border-b-2 border-gray-200 pb-1">
+                References
+              </h2>
+              <div className="grid gap-4 md:grid-cols-2">
                 {data.references.map((ref, index) => (
                   <div key={index} className="space-y-1">
-                    <h4 className="font-medium">{ref.name}</h4>
-                    <p>
-                      {ref.position} at {ref.company}
+                    <h3 className="font-semibold">{ref.name}</h3>
+                    <p className="text-gray-700">
+                      {ref.position} {ref.company && `at ${ref.company}`}
                     </p>
-                    <div className="text-sm text-muted-foreground">
-                      <p>{ref.email}</p>
-                      <p>{ref.phone}</p>
+                    <div className="text-sm text-gray-600 space-y-1">
+                      {ref.email && <p>Email: {ref.email}</p>}
+                      {ref.phone && <p>Phone: {ref.phone}</p>}
                     </div>
                   </div>
                 ))}
@@ -163,19 +201,22 @@ const Preview = ({ data }: PreviewProps) => {
             </div>
           )}
 
+          {/* Additional Information Section */}
           {(data.additionalInfo.languages.length > 0 ||
             data.additionalInfo.hobbies.length > 0 ||
             data.additionalInfo.additionalNotes) && (
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Additional Information</h3>
+              <h2 className="text-xl font-semibold border-b-2 border-gray-200 pb-1">
+                Additional Information
+              </h2>
               
               {data.additionalInfo.languages.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="font-medium">Languages</h4>
+                  <h3 className="font-medium text-gray-900">Languages</h3>
                   <div className="space-y-1">
                     {data.additionalInfo.languages.map((lang, index) => (
-                      <p key={index}>
-                        {lang.language} - {lang.proficiency}
+                      <p key={index} className="text-sm text-gray-700">
+                        <span className="font-medium">{lang.language}</span> - {lang.proficiency}
                       </p>
                     ))}
                   </div>
@@ -184,12 +225,12 @@ const Preview = ({ data }: PreviewProps) => {
 
               {data.additionalInfo.hobbies.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="font-medium">Hobbies & Interests</h4>
+                  <h3 className="font-medium text-gray-900">Hobbies & Interests</h3>
                   <div className="flex flex-wrap gap-2">
                     {data.additionalInfo.hobbies.map((hobby, index) => (
                       <span
                         key={index}
-                        className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
+                        className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm"
                       >
                         {hobby}
                       </span>
@@ -200,8 +241,10 @@ const Preview = ({ data }: PreviewProps) => {
 
               {data.additionalInfo.additionalNotes && (
                 <div className="space-y-2">
-                  <h4 className="font-medium">Additional Notes</h4>
-                  <p className="text-sm">{data.additionalInfo.additionalNotes}</p>
+                  <h3 className="font-medium text-gray-900">Additional Notes</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {data.additionalInfo.additionalNotes}
+                  </p>
                 </div>
               )}
             </div>

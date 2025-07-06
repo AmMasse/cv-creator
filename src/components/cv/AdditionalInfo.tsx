@@ -1,8 +1,10 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
+import { useState } from "react";
 
 interface AdditionalInfoProps {
   data: {
@@ -18,6 +20,8 @@ interface AdditionalInfoProps {
 }
 
 const AdditionalInfo = ({ data, onChange }: AdditionalInfoProps) => {
+  const [newHobby, setNewHobby] = useState("");
+
   const addLanguage = () => {
     onChange({
       ...data,
@@ -43,12 +47,15 @@ const AdditionalInfo = ({ data, onChange }: AdditionalInfoProps) => {
     });
   };
 
-  const addHobby = (hobby: string) => {
-    if (hobby.trim() && !data.hobbies.includes(hobby.trim())) {
+  const addHobby = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedHobby = newHobby.trim();
+    if (trimmedHobby && !data.hobbies.some(hobby => hobby.toLowerCase() === trimmedHobby.toLowerCase())) {
       onChange({
         ...data,
-        hobbies: [...data.hobbies, hobby.trim()],
+        hobbies: [...data.hobbies, trimmedHobby],
       });
+      setNewHobby("");
     }
   };
 
@@ -61,32 +68,36 @@ const AdditionalInfo = ({ data, onChange }: AdditionalInfoProps) => {
 
   return (
     <div className="space-y-6 animate-fadeIn">
+      {/* Languages Section */}
       <div className="space-y-4">
-        <Label>Languages</Label>
+        <Label className="text-base font-semibold">Languages</Label>
         {data.languages.map((lang, index) => (
           <div
             key={index}
-            className="flex items-center space-x-2 p-2 border rounded-lg"
+            className="flex items-center space-x-2 p-3 border rounded-lg bg-card"
           >
             <Input
-              placeholder="Language"
+              placeholder="Language (e.g., English)"
               value={lang.language}
               onChange={(e) =>
                 updateLanguage(index, "language", e.target.value)
               }
               className="flex-1"
+              maxLength={30}
             />
             <Input
-              placeholder="Proficiency"
+              placeholder="Proficiency (e.g., Native, Fluent)"
               value={lang.proficiency}
               onChange={(e) =>
                 updateLanguage(index, "proficiency", e.target.value)
               }
               className="flex-1"
+              maxLength={20}
             />
             <button
               onClick={() => removeLanguage(index)}
-              className="text-muted-foreground hover:text-destructive transition-colors"
+              className="text-muted-foreground hover:text-destructive transition-colors p-1"
+              aria-label="Remove language"
             >
               <X className="h-4 w-4" />
             </button>
@@ -97,51 +108,61 @@ const AdditionalInfo = ({ data, onChange }: AdditionalInfoProps) => {
         </Button>
       </div>
 
+      {/* Hobbies Section */}
       <div className="space-y-4">
-        <Label>Hobbies & Interests</Label>
-        <div className="flex flex-wrap gap-2">
-          {data.hobbies.map((hobby, index) => (
-            <div
-              key={index}
-              className="flex items-center space-x-1 bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
-            >
-              <span>{hobby}</span>
-              <button
-                onClick={() => removeHobby(hobby)}
-                className="hover:text-destructive transition-colors"
+        <Label className="text-base font-semibold">Hobbies & Interests</Label>
+        
+        {data.hobbies.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {data.hobbies.map((hobby, index) => (
+              <div
+                key={index}
+                className="flex items-center space-x-1 bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm hover:bg-secondary/80 transition-colors"
               >
-                <X className="h-3 w-3" />
-              </button>
-            </div>
-          ))}
-        </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const input = e.currentTarget.elements.namedItem(
-              "hobby"
-            ) as HTMLInputElement;
-            addHobby(input.value);
-            input.value = "";
-          }}
-          className="flex space-x-2"
-        >
-          <Input name="hobby" placeholder="Add a hobby or interest" />
-          <Button type="submit">Add</Button>
+                <span>{hobby}</span>
+                <button
+                  onClick={() => removeHobby(hobby)}
+                  className="hover:text-destructive transition-colors"
+                  aria-label={`Remove ${hobby}`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <form onSubmit={addHobby} className="flex space-x-2">
+          <Input 
+            value={newHobby}
+            onChange={(e) => setNewHobby(e.target.value)}
+            placeholder="Add a hobby or interest" 
+            maxLength={30}
+          />
+          <Button type="submit" disabled={!newHobby.trim()}>
+            Add
+          </Button>
         </form>
       </div>
 
+      {/* Additional Notes Section */}
       <div className="space-y-2">
-        <Label htmlFor="additionalNotes">Additional Notes</Label>
+        <Label htmlFor="additionalNotes" className="text-base font-semibold">
+          Additional Notes
+        </Label>
         <Textarea
           id="additionalNotes"
           value={data.additionalNotes}
           onChange={(e) =>
             onChange({ ...data, additionalNotes: e.target.value })
           }
-          placeholder="Any other information you'd like to include..."
-          className="min-h-[100px]"
+          placeholder="Any other information you'd like to include (certifications, awards, volunteer work, etc.)..."
+          className="min-h-[120px]"
+          maxLength={500}
         />
+        <p className="text-xs text-muted-foreground">
+          {data.additionalNotes.length}/500 characters
+        </p>
       </div>
     </div>
   );

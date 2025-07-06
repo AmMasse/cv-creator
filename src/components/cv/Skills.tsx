@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +15,9 @@ const Skills = ({ data, onChange }: SkillsProps) => {
 
   const addSkill = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newSkill.trim() && !data.includes(newSkill.trim())) {
-      onChange([...data, newSkill.trim()]);
+    const trimmedSkill = newSkill.trim();
+    if (trimmedSkill && !data.some(skill => skill.toLowerCase() === trimmedSkill.toLowerCase())) {
+      onChange([...data, trimmedSkill]);
       setNewSkill("");
     }
   };
@@ -34,29 +36,38 @@ const Skills = ({ data, onChange }: SkillsProps) => {
               id="skill"
               value={newSkill}
               onChange={(e) => setNewSkill(e.target.value)}
-              placeholder="Enter a skill"
+              placeholder="Enter a skill (e.g., JavaScript, Project Management)"
+              maxLength={50}
             />
-            <Button type="submit">Add</Button>
+            <Button type="submit" disabled={!newSkill.trim()}>
+              Add
+            </Button>
           </div>
         </div>
       </form>
 
-      <div className="flex flex-wrap gap-2">
-        {data.map((skill, index) => (
-          <div
-            key={index}
-            className="flex items-center bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
-          >
-            {skill}
-            <button
-              onClick={() => removeSkill(skill)}
-              className="ml-2 hover:text-destructive transition-colors"
-            >
-              <X className="h-3 w-3" />
-            </button>
+      {data.length > 0 && (
+        <div className="space-y-2">
+          <Label>Your Skills ({data.length})</Label>
+          <div className="flex flex-wrap gap-2">
+            {data.map((skill, index) => (
+              <div
+                key={index}
+                className="flex items-center bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm hover:bg-secondary/80 transition-colors"
+              >
+                <span>{skill}</span>
+                <button
+                  onClick={() => removeSkill(skill)}
+                  className="ml-2 hover:text-destructive transition-colors"
+                  aria-label={`Remove ${skill}`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -20,22 +21,44 @@ const PersonalInfo = ({ data, onChange }: PersonalInfoProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        console.error('Please select an image file');
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        console.error('File size must be less than 5MB');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
+      };
+      reader.onerror = () => {
+        console.error('Error reading file');
       };
       reader.readAsDataURL(file);
       onChange({ ...data, profilePicture: file });
     }
   };
 
+  const getInitials = (name: string) => {
+    if (!name) return "?";
+    const names = name.trim().split(" ");
+    if (names.length === 1) return names[0][0]?.toUpperCase() || "?";
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn">
       <div className="flex flex-col items-center space-y-4">
-        <Avatar className="w-32 h-32">
-          <AvatarImage src={previewUrl} />
-          <AvatarFallback className="bg-muted">
-            {data.fullName ? data.fullName[0] : "?"}
+        <Avatar className="w-32 h-32 border-4 border-gray-200">
+          <AvatarImage src={previewUrl} alt="Profile picture" />
+          <AvatarFallback className="bg-muted text-2xl font-semibold">
+            {getInitials(data.fullName)}
           </AvatarFallback>
         </Avatar>
         <div>
@@ -48,32 +71,34 @@ const PersonalInfo = ({ data, onChange }: PersonalInfoProps) => {
           />
           <Label
             htmlFor="profile-picture"
-            className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors underline"
           >
-            Upload Profile Picture
+            {previewUrl ? "Change Profile Picture" : "Upload Profile Picture"}
           </Label>
         </div>
       </div>
 
       <div className="grid gap-4">
         <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name</Label>
+          <Label htmlFor="fullName">Full Name *</Label>
           <Input
             id="fullName"
             value={data.fullName}
             onChange={(e) => onChange({ ...data, fullName: e.target.value })}
             placeholder="John Doe"
+            required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Email *</Label>
           <Input
             id="email"
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
             placeholder="john@example.com"
+            required
           />
         </div>
 
@@ -81,6 +106,7 @@ const PersonalInfo = ({ data, onChange }: PersonalInfoProps) => {
           <Label htmlFor="phone">Phone</Label>
           <Input
             id="phone"
+            type="tel"
             value={data.phone}
             onChange={(e) => onChange({ ...data, phone: e.target.value })}
             placeholder="+1 234 567 890"

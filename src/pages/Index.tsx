@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -61,7 +62,53 @@ const Index = () => {
 
   const progress = ((currentSection + 1) / sections.length) * 100;
 
+  const validateCurrentSection = () => {
+    switch (currentSection) {
+      case 0: // Personal Info
+        if (!formData.personalInfo.fullName.trim()) {
+          toast.error("Please enter your full name");
+          return false;
+        }
+        if (!formData.personalInfo.email.trim()) {
+          toast.error("Please enter your email address");
+          return false;
+        }
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.personalInfo.email)) {
+          toast.error("Please enter a valid email address");
+          return false;
+        }
+        break;
+      case 1: // Experience
+        // Experience is optional, but if added, should have required fields
+        const incompleteExp = formData.experience.some(exp => 
+          !exp.company.trim() || !exp.position.trim()
+        );
+        if (incompleteExp) {
+          toast.error("Please complete all experience entries or remove incomplete ones");
+          return false;
+        }
+        break;
+      case 2: // Education
+        // Education is optional, but if added, should have required fields
+        const incompleteEdu = formData.education.some(edu => 
+          !edu.institution.trim() || !edu.degree.trim()
+        );
+        if (incompleteEdu) {
+          toast.error("Please complete all education entries or remove incomplete ones");
+          return false;
+        }
+        break;
+    }
+    return true;
+  };
+
   const handleNext = () => {
+    if (!validateCurrentSection()) {
+      return;
+    }
+
     if (currentSection < sections.length - 1) {
       setCurrentSection(currentSection + 1);
       toast.success("Section saved successfully!");
@@ -81,31 +128,51 @@ const Index = () => {
     }));
   };
 
+  const getSectionDescription = (index: number) => {
+    const descriptions = [
+      "Add your basic contact information and profile picture",
+      "List your work experience and achievements",
+      "Add your educational background",
+      "Highlight your key skills and competencies",
+      "Include professional references (optional)",
+      "Add languages, hobbies, and additional notes (optional)",
+      "Review and download your CV or resume",
+    ];
+    return descriptions[index] || "";
+  };
+
   return (
-    <div className="min-h-screen bg-background p-6 animate-fadeIn">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-6 animate-fadeIn">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight">Build Your CV</h1>
-          <p className="text-muted-foreground">
-            Create a professional CV in minutes
+          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Build Your CV
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Create a professional CV in minutes with our step-by-step builder
           </p>
         </div>
 
-        <Card className="p-6 backdrop-blur-sm bg-card/80 shadow-lg">
+        <Card className="p-6 backdrop-blur-sm bg-card/95 shadow-xl border-0">
           <div className="space-y-6">
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">
-                  {sections[currentSection]}
-                </h2>
-                <span className="text-sm text-muted-foreground">
+                <div>
+                  <h2 className="text-xl font-semibold">
+                    {sections[currentSection]}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {getSectionDescription(currentSection)}
+                  </p>
+                </div>
+                <span className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
                   Step {currentSection + 1} of {sections.length}
                 </span>
               </div>
               <Progress value={progress} className="h-2" />
             </div>
 
-            <div className="min-h-[400px] animate-fadeIn">
+            <div className="min-h-[500px] animate-fadeIn">
               {currentSection === 0 && (
                 <PersonalInfo
                   data={formData.personalInfo}
@@ -145,17 +212,19 @@ const Index = () => {
               {currentSection === 6 && <Preview data={formData} />}
             </div>
 
-            <div className="flex justify-between pt-4">
+            <div className="flex justify-between pt-4 border-t">
               <Button
                 variant="outline"
                 onClick={handleBack}
                 disabled={currentSection === 0}
+                className="min-w-[100px]"
               >
                 Back
               </Button>
               <Button
                 onClick={handleNext}
                 disabled={currentSection === sections.length - 1}
+                className="min-w-[100px]"
               >
                 {currentSection === sections.length - 2 ? "Preview" : "Next"}
               </Button>
