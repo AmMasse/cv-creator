@@ -12,11 +12,7 @@ A modern, responsive web application for creating professional CVs and resumes. 
 - **ATS-Friendly**: Templates designed to pass Applicant Tracking Systems
 - **Modern UI**: Clean, professional interface built with shadcn/ui components
 
-## 🚀 Live Demo
-
-Visit the live application: [CV Builder Pro](https://your-username.github.io/cv-creator-pro-helper/)
-
-## 🛠️ Local Development
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -27,8 +23,8 @@ Visit the live application: [CV Builder Pro](https://your-username.github.io/cv-
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/cv-creator-pro-helper.git
-cd cv-creator-pro-helper
+git clone https://github.com/your-username/cv-creator.git
+cd cv-creator
 ```
 
 2. Install dependencies:
@@ -51,13 +47,13 @@ npm run build
 
 The built files will be in the `dist` directory.
 
-## 🚀 Deployment to GitHub Pages
+## 🚀 Deploy to GitHub Pages
 
 This project is configured for automatic deployment to GitHub Pages using GitHub Actions.
 
-### Setup Instructions:
+### Automatic Deployment:
 
-1. **Fork or clone this repository** to your GitHub account
+1. **Fork this repository** to your GitHub account
 
 2. **Enable GitHub Pages**:
    - Go to your repository settings
@@ -65,19 +61,17 @@ This project is configured for automatic deployment to GitHub Pages using GitHub
    - Set source to "GitHub Actions"
 
 3. **Update the base path** in `vite.config.ts`:
-   - Change `'/cv-creator-pro-helper/'` to `'/your-repository-name/'`
+   - Change `'/cv-creator/'` to `'/your-repository-name/'`
 
-4. **Push to main/master branch**:
+4. **Push to main branch**:
    - The GitHub Action will automatically build and deploy your site
    - Your site will be available at: `https://your-username.github.io/your-repository-name/`
 
 ### Manual Deployment:
 
-If you prefer manual deployment:
-
 ```bash
 npm run build
-npm run preview
+# Then upload the dist folder to your hosting provider
 ```
 
 ## 🔧 Technologies Used
@@ -91,14 +85,7 @@ npm run preview
 - **html2pdf.js** - PDF generation
 - **Sonner** - Toast notifications
 
-## 📱 Responsive Design
-
-The application is fully responsive and works on:
-- Desktop computers
-- Tablets
-- Mobile phones
-
-## 🎨 CV Sections
+## 📱 Features Overview
 
 The CV builder includes the following sections:
 - **Personal Information** - Name, contact details, profile picture
@@ -118,7 +105,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🆘 Support
 
-If you encounter any issues or have questions, please [open an issue](https://github.com/your-username/cv-creator-pro-helper/issues) on GitHub.
+If you encounter any issues or have questions, please [open an issue](https://github.com/your-username/cv-creator/issues) on GitHub.
 
 ---
 
