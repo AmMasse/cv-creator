@@ -1,69 +1,125 @@
-# Welcome to your Lovable project
 
-## Project info
+# Professional CV Builder
 
-**URL**: https://lovable.dev/projects/48c58aee-adf4-40a2-b06c-313a8cda0a6d
+A modern, responsive web application for creating professional CVs and resumes. Built with React, TypeScript, and Tailwind CSS.
 
-## How can I edit this code?
+## 🌟 Features
 
-There are several ways of editing your application.
+- **Intuitive Step-by-Step Builder**: Guided process for creating professional CVs
+- **Live Preview**: See your CV update in real-time as you make changes
+- **PDF Export**: Download your CV as a high-quality PDF
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **ATS-Friendly**: Templates designed to pass Applicant Tracking Systems
+- **Modern UI**: Clean, professional interface built with shadcn/ui components
 
-**Use Lovable**
+## 🚀 Live Demo
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/48c58aee-adf4-40a2-b06c-313a8cda0a6d) and start prompting.
+Visit the live application: [CV Builder Pro](https://your-username.github.io/cv-creator-pro-helper/)
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Local Development
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (version 18 or higher)
+- npm or yarn
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/cv-creator-pro-helper.git
+cd cv-creator-pro-helper
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. Install dependencies:
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and navigate to `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📦 Building for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The built files will be in the `dist` directory.
 
-## What technologies are used for this project?
+## 🚀 Deployment to GitHub Pages
 
-This project is built with .
+This project is configured for automatic deployment to GitHub Pages using GitHub Actions.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Setup Instructions:
 
-## How can I deploy this project?
+1. **Fork or clone this repository** to your GitHub account
 
-Simply open [Lovable](https://lovable.dev/projects/48c58aee-adf4-40a2-b06c-313a8cda0a6d) and click on Share -> Publish.
+2. **Enable GitHub Pages**:
+   - Go to your repository settings
+   - Scroll down to "Pages" section
+   - Set source to "GitHub Actions"
 
-## I want to use a custom domain - is that possible?
+3. **Update the base path** in `vite.config.ts`:
+   - Change `'/cv-creator-pro-helper/'` to `'/your-repository-name/'`
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+4. **Push to main/master branch**:
+   - The GitHub Action will automatically build and deploy your site
+   - Your site will be available at: `https://your-username.github.io/your-repository-name/`
+
+### Manual Deployment:
+
+If you prefer manual deployment:
+
+```bash
+npm run build
+npm run preview
+```
+
+## 🔧 Technologies Used
+
+- **React 18** - Modern React with hooks
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - Beautiful, accessible UI components
+- **Lucide React** - Beautiful icons
+- **html2pdf.js** - PDF generation
+- **Sonner** - Toast notifications
+
+## 📱 Responsive Design
+
+The application is fully responsive and works on:
+- Desktop computers
+- Tablets
+- Mobile phones
+
+## 🎨 CV Sections
+
+The CV builder includes the following sections:
+- **Personal Information** - Name, contact details, profile picture
+- **Work Experience** - Professional experience with descriptions
+- **Education** - Academic background and qualifications
+- **Skills** - Technical and soft skills
+- **References** - Professional references
+- **Additional Information** - Languages, hobbies, notes
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🆘 Support
+
+If you encounter any issues or have questions, please [open an issue](https://github.com/your-username/cv-creator-pro-helper/issues) on GitHub.
+
+---
+
+**Made with ❤️ for job seekers everywhere**
